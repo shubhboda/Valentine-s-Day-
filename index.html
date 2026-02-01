@@ -5,9 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Happy Valentine's Day!</title>
     <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-color: #fff;
+            --accent-color: #ff1493;
+            --card-hover: rgba(255, 255, 255, 0.25);
+            --deep-bg: linear-gradient(135deg, #2b1055, #7597de); /* Modern deep gradient */
+            --peach-gold: linear-gradient(to right, #ed4264, #ffedbc);
+        }
+
         body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--primary-gradient);
             color: white;
             margin: 0;
             padding: 0;
@@ -18,13 +29,67 @@
             align-items: center;
         }
 
+        /* Background Floating Elements */
+        .bg-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(50px);
+            opacity: 0.6;
+            animation: floatShape 20s infinite alternate;
+        }
+
+        .shape:nth-child(1) {
+            top: -10%;
+            left: -10%;
+            width: 500px;
+            height: 500px;
+            background: #ff6b6b;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            bottom: -10%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: #7597de;
+            animation-delay: -5s;
+        }
+
+        .shape:nth-child(3) {
+            top: 40%;
+            left: 40%;
+            width: 300px;
+            height: 300px;
+            background: #ffedbc;
+            animation-delay: -10s;
+        }
+
+        @keyframes floatShape {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(100px, 50px) rotate(20deg); }
+        }
+
         .container {
             text-align: center;
             background: rgba(255, 255, 255, 0.1);
             padding: 40px;
             border-radius: 20px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
             max-width: 600px;
             width: 90%;
             position: relative;
@@ -114,6 +179,7 @@
             height: 100%;
             pointer-events: none;
             overflow: hidden;
+            z-index: 0;
         }
 
         .heart {
@@ -171,6 +237,7 @@
 
         .screen.active {
             display: block;
+            animation: fadeIn 0.8s ease-out;
         }
 
         @media (max-width: 768px) {
@@ -193,6 +260,10 @@
             .container {
                 padding: 30px 20px;
             }
+            .name-highlight { font-size: 3.5rem; }
+            .sub-text { font-size: 1.8rem; }
+            .wiggle-emoji { font-size: 4rem; }
+            .overlay-question { font-size: 1.8rem; }
         }
 
         @media (max-width: 480px) {
@@ -211,9 +282,264 @@
                 min-height: 55px;
             }
         }
+
+        /* Welcome Overlay Styles - Modern Glassmorphism */
+        #welcome-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--deep-bg);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+            text-align: center;
+            perspective: 1000px; /* For 3D effects */
+        }
+
+        #welcome-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        /* Step Styles */
+        .overlay-step {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 900px;
+            animation: fadeBlurIn 0.8s ease-out;
+        }
+
+        .overlay-step.active {
+            display: flex;
+        }
+
+        .welcome-text-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+            transform-style: preserve-3d;
+        }
+
+        .name-highlight {
+            font-size: 6rem;
+            background: var(--peach-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            text-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            animation: fadeIn3D 1.5s ease-out forwards;
+            opacity: 0;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .sub-text {
+            font-size: 2.5rem;
+            color: #e0e0e0;
+            font-weight: 300;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            animation: slideUpMorph 1.5s ease-out 1s forwards; /* 1s delay */
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .wiggle-emoji {
+            font-size: 6rem;
+            margin: 30px;
+            display: inline-block;
+            opacity: 0;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));
+            animation: fadeIn 1s ease-out 1.5s forwards, bounceWiggle 2s infinite ease-in-out 1.5s;
+        }
+
+        .overlay-question {
+            font-size: 3rem;
+            color: white;
+            margin-bottom: 40px;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .overlay-input {
+            padding: 20px 30px;
+            font-size: 1.8rem;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            color: white;
+            width: 80%;
+            max-width: 500px;
+            outline: none;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .overlay-input::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+
+        .overlay-input:focus {
+            border-color: #ffd700;
+            background: rgba(255,255,255,0.2);
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.4);
+            transform: scale(1.05);
+        }
+
+        .overlay-btn {
+            padding: 15px 45px;
+            font-size: 1.4rem;
+            background: linear-gradient(45deg, #ff0080, #ff8c00);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .overlay-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            filter: brightness(1.1);
+        }
+
+        /* Relation Grid - Glass Cards */
+        .relation-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+            perspective: 1000px;
+        }
+
+        .relation-option {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 20px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.1s ease-out; /* Fast transition for tilt */
+            user-select: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            min-width: 100px;
+            transform-style: preserve-3d;
+        }
+
+        .relation-option:hover {
+            background: rgba(255,255,255,0.25);
+            border-color: rgba(255,255,255,0.5);
+            color: #fff;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+            /* Transform is handled by JS for tilt */
+        }
+
+        /* Animations */
+        @keyframes fadeIn3D {
+            0% {
+                opacity: 0;
+                transform: scale(0.8) translateZ(-100px);
+                filter: blur(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateZ(0);
+                filter: blur(0);
+            }
+        }
+
+        @keyframes slideUpMorph {
+            0% {
+                opacity: 0;
+                transform: translateY(40px) scaleY(1.2);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scaleY(1);
+            }
+        }
+
+        @keyframes fadeBlurIn {
+            0% {
+                opacity: 0;
+                filter: blur(10px);
+                transform: scale(0.95);
+            }
+            100% {
+                opacity: 1;
+                filter: blur(0);
+                transform: scale(1);
+            }
+        }
+
+        @keyframes bounceWiggle {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-15px) rotate(-5deg); }
+            50% { transform: translateY(0) rotate(5deg); }
+            75% { transform: translateY(-7px) rotate(-3deg); }
+        }
+
+        @keyframes heartBeat {
+            0% { transform: scale(1); }
+            14% { transform: scale(1.3); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.3); }
+            70% { transform: scale(1); }
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
     </style>
 </head>
 <body>
+    <!-- Welcome Overlay -->
+    <div id="welcome-overlay">
+        <!-- Step 1: Welcome Animation -->
+        <div id="step-welcome" class="overlay-step active">
+            <div class="welcome-text-container">
+                <div class="name-highlight">Shubh</div>
+                <div class="sub-text">welcomes you <span class="heart-icon">❤️</span></div>
+            </div>
+            <div class="wiggle-emoji">🥰</div>
+        </div>
+
+        <!-- Step 2: Name Input -->
+        <div id="step-name" class="overlay-step">
+            <h2 class="overlay-question">What is your name?</h2>
+            <input type="text" id="overlay-name-input" class="overlay-input" placeholder="Enter your name..." autocomplete="off">
+            <button id="name-next-btn" class="overlay-btn">Continue ➡️</button>
+        </div>
+
+        <!-- Step 3: Relation Selection -->
+        <div id="step-relation" class="overlay-step">
+            <h2 class="overlay-question">What is your relation with Shubh?</h2>
+            <div class="relation-grid" id="relation-options">
+                <!-- Options generated by JS -->
+            </div>
+        </div>
+    </div>
+
     <div class="hearts">
         <div class="heart">❤️</div>
         <div class="heart">💖</div>
@@ -247,7 +573,165 @@
 
     <script>
         // Google Apps Script URL - Replace with your deployed script URL
-        const SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyh55OiMeRHpAx-RAiA-DKLYgohDCnqMMwcF-DmRgZ2m_sAD4tpMEOn7gVKCkPMtJtsKw/exec';
+
+        // Welcome Overlay & Flow Logic
+        const welcomeOverlay = document.getElementById('welcome-overlay');
+        const stepWelcome = document.getElementById('step-welcome');
+        const stepName = document.getElementById('step-name');
+        const stepRelation = document.getElementById('step-relation');
+        const overlayNameInput = document.getElementById('overlay-name-input');
+        const nameNextBtn = document.getElementById('name-next-btn');
+        const relationOptions = document.getElementById('relation-options');
+        
+        // Data storage
+        let visitorData = {
+            name: '',
+            relation: ''
+        };
+
+        // Relations List
+        const relations = [
+            "Brother", "Sister", "Wife", "Husband", 
+            "Friend", "Best Friend", "Mom", "Dad", 
+            "Family", "Crush", "Love", "Classmate", 
+            "Colleague", "Other"
+        ];
+
+        // 1. Initialize Flow: Auto-advance from Welcome Animation to Name Input
+        setTimeout(() => {
+            stepWelcome.classList.remove('active');
+            stepName.classList.add('active');
+        }, 3500); // 3.5 seconds for animation to complete
+
+        // 2. Handle Name Input
+        nameNextBtn.addEventListener('click', () => {
+            const name = overlayNameInput.value.trim();
+            if (name) {
+                visitorData.name = name;
+                stepName.classList.remove('active');
+                stepRelation.classList.add('active');
+                generateRelationOptions();
+            } else {
+                // Shake effect or alert
+                overlayNameInput.style.border = "2px solid red";
+                setTimeout(() => { overlayNameInput.style.border = "2px solid rgba(255,255,255,0.5)"; }, 500);
+            }
+        });
+
+        // Allow Enter key for name input
+        overlayNameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') nameNextBtn.click();
+        });
+
+        // 3. Generate and Handle Relation Options
+        function generateRelationOptions() {
+            relationOptions.innerHTML = '';
+            relations.forEach(relation => {
+                const btn = document.createElement('div');
+                btn.className = 'relation-option';
+                btn.textContent = relation;
+                btn.onclick = () => selectRelation(relation);
+                
+                // 3D Tilt Effect
+                btn.addEventListener('mousemove', (e) => {
+                    const rect = btn.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    // Max rotation 15deg
+                    const rotateX = ((y - centerY) / centerY) * -15; 
+                    const rotateY = ((x - centerX) / centerX) * 15;
+                    
+                    btn.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+                });
+                
+                btn.addEventListener('mouseleave', () => {
+                    btn.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+                });
+
+                relationOptions.appendChild(btn);
+            });
+        }
+
+        function selectRelation(relation) {
+            visitorData.relation = relation;
+            finishWelcomeFlow();
+        }
+
+        // 4. Finish Flow & Integrate with Main Site
+        function finishWelcomeFlow() {
+            // Add timestamp
+            visitorData.date = new Date().toLocaleDateString();
+            visitorData.time = new Date().toLocaleTimeString();
+
+            // 1. Save locally (Backup)
+            let allVisitors = JSON.parse(localStorage.getItem('valentine_visitors_log')) || [];
+            allVisitors.push(visitorData);
+            localStorage.setItem('valentine_visitors_log', JSON.stringify(allVisitors));
+            localStorage.setItem('valentine_visitor', JSON.stringify(visitorData));
+
+            // 2. Save to Google Sheet (Cloud)
+            if(SCRIPT_URL && !SCRIPT_URL.includes("YOUR_SCRIPT_ID")) {
+                fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', // Important for Google Apps Script
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(visitorData)
+                }).then(() => console.log("Sent to Cloud"))
+                  .catch(e => console.error("Cloud Error:", e));
+            }
+            
+            // Hide Overlay
+            welcomeOverlay.classList.add('hidden');
+            
+            // Skip original Name Screen and go to Valentine Screen
+            const nameScreen = document.getElementById('name-screen');
+            const valentineScreen = document.getElementById('valentine-screen');
+            const userNameDisplay = document.getElementById('user-name');
+            const messageDiv = document.getElementById('message');
+            
+            nameScreen.classList.remove('active');
+            valentineScreen.classList.add('active');
+            
+            // Personalize Greeting
+            userNameDisplay.innerHTML = `Welcome ${visitorData.name},<br><span style="font-size: 0.6em">Shubh's ${visitorData.relation} ❤️</span>`;
+            
+            // Relation-based Message
+            let specialMsg = "";
+            const rel = visitorData.relation.toLowerCase();
+            
+            if(['wife', 'husband', 'crush', 'love'].includes(rel)) {
+                specialMsg = "You mean the world to me! 💖";
+            } else if(['mom', 'dad', 'family'].includes(rel)) {
+                specialMsg = "So happy to have my family here! 🏠❤️";
+            } else if(['brother', 'sister'].includes(rel)) {
+                specialMsg = "You're the best sibling ever! 👫";
+            } else if(['friend', 'best friend'].includes(rel)) {
+                specialMsg = "Life is better with friends like you! 🥳";
+            } else {
+                specialMsg = "Thanks for being here! ✨";
+            }
+            
+            // Show message after a delay if messageDiv exists
+            if(messageDiv) {
+                // Clear previous content first
+                 messageDiv.innerHTML = "";
+                 
+                setTimeout(() => {
+                    messageDiv.innerHTML = specialMsg;
+                    messageDiv.classList.add('show');
+                }, 1000);
+            }
+
+            userName = visitorData.name;
+        }
+
+        // Google Apps Script URL - Replace with your deployed script URL
+        // const SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec'; // Removed duplicate
 
         let userName = '';
 

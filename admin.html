@@ -3,11 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - Valentine's Responses</title>
+    <title>Admin Panel - Valentine's Day ❤️</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            --deep-bg: linear-gradient(135deg, #2b1055, #7597de);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+
         body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--deep-bg);
             color: white;
             margin: 0;
             padding: 0;
@@ -18,60 +26,51 @@
         }
 
         .container {
-            text-align: center;
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--glass-bg);
             padding: 40px;
             border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-            max-width: 800px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            max-width: 900px;
             width: 90%;
+            text-align: center;
         }
 
-        h1 {
-            font-size: 2.5em;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
+        h1 { margin-bottom: 20px; }
 
-        .password-input {
-            margin-bottom: 20px;
-        }
-
-        .password-input input {
-            padding: 10px;
-            font-size: 1.2em;
-            border: none;
+        input {
+            padding: 15px;
+            font-size: 1.2rem;
             border-radius: 10px;
-            width: 80%;
-            max-width: 300px;
+            border: none;
+            outline: none;
+            margin-bottom: 20px;
+            width: 200px;
+            text-align: center;
         }
 
         button {
-            padding: 15px 30px;
-            font-size: 1.2em;
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            background: linear-gradient(45deg, #ff0080, #ff8c00);
+            color: white;
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
-            color: white;
+            transition: transform 0.2s;
+            margin: 5px;
         }
 
-        button:hover {
-            transform: scale(1.05);
-        }
+        button:hover { transform: scale(1.05); }
 
-        .responses {
-            display: none;
-            margin-top: 40px;
-        }
+        .hidden { display: none !important; }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            background: rgba(255, 255, 255, 0.1);
+            margin-top: 20px;
+            background: rgba(0,0,0,0.2);
             border-radius: 10px;
             overflow: hidden;
         }
@@ -79,109 +78,184 @@
         th, td {
             padding: 15px;
             text-align: left;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
-        th {
-            background: rgba(255, 255, 255, 0.2);
-            font-weight: bold;
-        }
+        th { background: rgba(0,0,0,0.3); }
+        
+        tr:hover { background: rgba(255,255,255,0.05); }
 
-        .error {
-            color: #ff6b6b;
+        .action-bar {
             margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
         }
+        
+        .danger-btn { background: linear-gradient(45deg, #ff416c, #ff4b2b); }
+        .export-btn { background: linear-gradient(45deg, #11998e, #38ef7d); }
 
-        @media (max-width: 768px) {
-            .container {
-                padding: 20px;
-            }
-            table {
-                font-size: 0.8em;
-            }
-            th, td {
-                padding: 10px;
-            }
-        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Admin Panel</h1>
-        <div class="password-input">
-            <input type="password" id="password" placeholder="Enter admin password">
-        </div>
-        <button id="login-btn">Login</button>
-        <div class="responses" id="responses">
-            <h2>Valentine's Responses</h2>
-            <table id="responses-table">
+
+    <!-- PIN Screen -->
+    <div id="pin-screen" class="container">
+        <h1>🔒 Admin Access</h1>
+        <p>Enter PIN to view visitor logs</p>
+        <input type="password" id="pin-input" placeholder="Enter PIN">
+        <br>
+        <button onclick="checkPin()">Unlock</button>
+        <p id="error-msg" style="color: #ff6b6b; margin-top: 10px; display: none;">Incorrect PIN!</p>
+    </div>
+
+    <!-- Dashboard Screen -->
+    <div id="dashboard-screen" class="container hidden">
+        <h1>❤️ Visitor Logs</h1>
+        <div style="overflow-x: auto;">
+            <table id="logs-table">
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Answer</th>
+                        <th>Relation</th>
                         <th>Date</th>
                         <th>Time</th>
                     </tr>
                 </thead>
-                <tbody id="responses-body">
+                <tbody id="logs-body">
+                    <!-- Data here -->
                 </tbody>
             </table>
         </div>
-        <div class="error" id="error"></div>
+        
+        <div class="action-bar">
+            <button class="export-btn" onclick="exportData()">📥 Export JSON</button>
+            <button class="export-btn" style="background: linear-gradient(45deg, #217346, #38ef7d);" onclick="exportExcel()">📊 Export Excel</button>
+            <button class="danger-btn" onclick="clearData()">🗑️ Clear Data</button>
+            <button onclick="logout()">🚪 Logout</button>
+        </div>
+        <p><a href="index.html" style="color: white; text-decoration: none; margin-top: 20px; display: block;">← Back to Home</a></p>
     </div>
 
     <script>
-        // Google Apps Script URL - Replace with your deployed script URL
-        const SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
+        // Set your PIN here
+        const ADMIN_PIN = "Shubh@9090"; // Updated PIN
+        
+        // Google Apps Script URL (Must match the one in index.html)
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyh55OiMeRHpAx-RAiA-DKLYgohDCnqMMwcF-DmRgZ2m_sAD4tpMEOn7gVKCkPMtJtsKw/exec';
 
-        // Set your admin password here
-        const ADMIN_PASSWORD = 'your_admin_password_here';
-
-        const passwordInput = document.getElementById('password');
-        const loginBtn = document.getElementById('login-btn');
-        const responsesDiv = document.getElementById('responses');
-        const responsesBody = document.getElementById('responses-body');
-        const errorDiv = document.getElementById('error');
-
-        // Function to fetch responses from Google Sheets
-        async function fetchResponses() {
-            try {
-                const response = await fetch(SCRIPT_URL);
-                const data = await response.json();
-                return data;
-            } catch (error) {
-                console.error('Error fetching responses:', error);
-                return [];
+        function checkPin() {
+            const input = document.getElementById('pin-input').value;
+            if(input === ADMIN_PIN) {
+                document.getElementById('pin-screen').classList.add('hidden');
+                document.getElementById('dashboard-screen').classList.remove('hidden');
+                loadData();
+            } else {
+                const err = document.getElementById('error-msg');
+                err.style.display = 'block';
+                err.classList.add('shake');
+                setTimeout(() => err.style.display = 'none', 2000);
             }
         }
 
-        // Function to display responses
-        function displayResponses(responses) {
-            responsesBody.innerHTML = '';
-            responses.forEach(response => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${response.name}</td>
-                    <td>${response.answer}</td>
-                    <td>${response.date}</td>
-                    <td>${response.time}</td>
-                `;
-                responsesBody.appendChild(row);
+        async function loadData() {
+            const tbody = document.getElementById('logs-body');
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Loading data... ⏳</td></tr>';
+
+            let logs = [];
+            
+            // 1. Try fetching from Cloud (Google Sheet)
+            if(SCRIPT_URL && !SCRIPT_URL.includes("YOUR_SCRIPT_ID")) {
+                try {
+                    const response = await fetch(SCRIPT_URL);
+                    const cloudData = await response.json();
+                    if(Array.isArray(cloudData)) {
+                        logs = cloudData;
+                    }
+                } catch(e) {
+                    console.error("Cloud fetch failed, falling back to local", e);
+                }
+            }
+
+            // 2. If Cloud failed or empty, use LocalStorage
+            if(logs.length === 0) {
+                logs = JSON.parse(localStorage.getItem('valentine_visitors_log')) || [];
+            }
+
+            tbody.innerHTML = '';
+
+            if(logs.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No visitors yet! 🥀</td></tr>';
+                return;
+            }
+
+            // Show latest first
+            logs.slice().reverse().forEach(log => {
+                const row = `<tr>
+                    <td>${log.name}</td>
+                    <td>${log.relation}</td>
+                    <td>${log.date || '-'}</td>
+                    <td>${log.time || '-'}</td>
+                </tr>`;
+                tbody.innerHTML += row;
             });
         }
 
-        // Login button click
-        loginBtn.addEventListener('click', async () => {
-            const password = passwordInput.value;
-            if (password === ADMIN_PASSWORD) {
-                errorDiv.textContent = '';
-                responsesDiv.style.display = 'block';
-                const responses = await fetchResponses();
-                displayResponses(responses);
-            } else {
-                errorDiv.textContent = 'Incorrect password!';
-                responsesDiv.style.display = 'none';
+        function clearData() {
+            if(confirm("Are you sure you want to delete all visitor logs? This cannot be undone.")) {
+                localStorage.removeItem('valentine_visitors_log');
+                loadData();
+                alert("Data cleared!");
             }
+        }
+
+        function exportData() {
+            const logs = localStorage.getItem('valentine_visitors_log');
+            if(!logs) {
+                alert("No data to export!");
+                return;
+            }
+            const blob = new Blob([logs], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'valentine_visitors.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        function exportExcel() {
+            let logs = [];
+            // Try to get data from local storage first
+            const localData = localStorage.getItem('valentine_visitors_log');
+            if (localData) {
+                logs = JSON.parse(localData);
+            }
+            
+            if(logs.length === 0) {
+                alert("No data to export!");
+                return;
+            }
+
+            // Create worksheet
+            const ws = XLSX.utils.json_to_sheet(logs);
+            
+            // Create workbook
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Visitors");
+            
+            // Generate Excel file
+            XLSX.writeFile(wb, "valentine_visitors.xlsx");
+        }
+
+        function logout() {
+            location.reload();
+        }
+
+        // Enter key support
+        document.getElementById('pin-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') checkPin();
         });
     </script>
 </body>
