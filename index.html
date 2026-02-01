@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Valentine's Day!</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            color: white;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            max-width: 600px;
+            width: 90%;
+            position: relative;
+        }
+
+        .name-input {
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        .name-input input {
+            padding: 10px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 300px;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .name {
+            font-size: 4em;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+            margin-bottom: 20px;
+        }
+
+        .question {
+            font-size: 2em;
+            margin-bottom: 40px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        #yes-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+        }
+
+        #yes-btn:hover {
+            transform: scale(1.05);
+        }
+
+        #no-btn {
+            background: linear-gradient(45deg, #74b9ff, #0984e3);
+            color: white;
+            position: relative;
+        }
+
+        #message {
+            font-size: 1.5em;
+            margin-top: 20px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        #message.show {
+            opacity: 1;
+        }
+
+        .hearts {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .heart {
+            position: absolute;
+            color: #ff69b4;
+            font-size: 2em;
+            animation: float 6s linear infinite;
+        }
+
+        .heart:nth-child(odd) {
+            animation-delay: -2s;
+        }
+
+        .heart:nth-child(even) {
+            animation-delay: -4s;
+        }
+
+        .burst-heart {
+            position: absolute;
+            color: #ff69b4;
+            font-size: 2em;
+            animation: burst 1s ease-out forwards;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes burst {
+            0% {
+                transform: scale(0) rotate(0deg);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.5) rotate(180deg);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(0) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .name {
+                font-size: 3em;
+            }
+            .question {
+                font-size: 1.5em;
+            }
+            .buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            button {
+                width: 100%;
+                padding: 20px 40px;
+                font-size: 1.4em;
+                min-height: 60px;
+            }
+            .container {
+                padding: 30px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2.5em;
+            }
+            .name {
+                font-size: 2.5em;
+            }
+            .question {
+                font-size: 1.3em;
+            }
+            button {
+                padding: 18px 35px;
+                font-size: 1.3em;
+                min-height: 55px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hearts">
+        <div class="heart">❤️</div>
+        <div class="heart">💖</div>
+        <div class="heart">💕</div>
+        <div class="heart">💗</div>
+        <div class="heart">💓</div>
+        <div class="heart">💘</div>
+    </div>
+
+    <!-- Name Input Screen -->
+    <div class="container screen active" id="name-screen">
+        <h1>Happy Valentine's Day!</h1>
+        <div class="name-input">
+            <input type="text" id="name-input" placeholder="Enter your name" maxlength="20">
+        </div>
+        <button id="continue-btn">Continue ❤️</button>
+        <p style="font-size: 0.8em; margin-top: 20px; opacity: 0.7;">Admin access: admin.html</p>
+    </div>
+
+    <!-- Main Valentine Screen -->
+    <div class="container screen" id="valentine-screen">
+        <h1>Happy Valentine's Day!</h1>
+        <div class="name" id="user-name"></div>
+        <div class="question">You are my Valentine?</div>
+        <div class="buttons">
+            <button id="yes-btn">Yes ❤️</button>
+            <button id="no-btn">No 😜</button>
+        </div>
+        <div id="message"></div>
+    </div>
+
+    <script>
+        // Google Apps Script URL - Replace with your deployed script URL
+        const SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
+
+        let userName = '';
+
+        const nameScreen = document.getElementById('name-screen');
+        const valentineScreen = document.getElementById('valentine-screen');
+        const nameInput = document.getElementById('name-input');
+        const continueBtn = document.getElementById('continue-btn');
+        const yesBtn = document.getElementById('yes-btn');
+        const noBtn = document.getElementById('no-btn');
+        const message = document.getElementById('message');
+        const userNameDisplay = document.getElementById('user-name');
+
+        // Function to send data to Google Sheets
+        async function sendToGoogleSheets(name, answer) {
+            const data = {
+                name: name,
+                answer: answer,
+                date: new Date().toLocaleDateString(),
+                time: new Date().toLocaleTimeString()
+            };
+
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+            } catch (error) {
+                console.error('Error sending data:', error);
+            }
+        }
+
+        // Continue button
+        continueBtn.addEventListener('click', () => {
+            userName = nameInput.value.trim();
+            if (userName) {
+                userNameDisplay.textContent = userName;
+                nameScreen.classList.remove('active');
+                valentineScreen.classList.add('active');
+            } else {
+                alert('Please enter your name!');
+            }
+        });
+
+        // Yes button click
+        yesBtn.addEventListener('click', () => {
+            message.textContent = "Yay! 💖 I knew it! Happy Valentine's Day!";
+            message.classList.add('show');
+            sendToGoogleSheets(userName, 'Yes');
+            createBurstHearts();
+        });
+
+        // No button move on mouseenter
+        function moveNoBtn() {
+            const btnRect = noBtn.getBoundingClientRect();
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+
+            const maxX = viewportWidth - btnRect.width;
+            const maxY = viewportHeight - btnRect.height;
+
+            const randomX = Math.random() * maxX;
+            const randomY = Math.random() * maxY;
+
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+            noBtn.style.zIndex = '1000';
+        }
+
+        noBtn.addEventListener('mouseenter', moveNoBtn);
+        noBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            moveNoBtn();
+            sendToGoogleSheets(userName, 'No');
+        });
+
+        // Burst hearts animation
+        function createBurstHearts() {
+            const container = document.querySelector('.container');
+            for (let i = 0; i < 10; i++) {
+                const burstHeart = document.createElement('div');
+                burstHeart.className = 'burst-heart';
+                burstHeart.textContent = '💖';
+                burstHeart.style.left = Math.random() * 100 + '%';
+                burstHeart.style.top = Math.random() * 100 + '%';
+                container.appendChild(burstHeart);
+
+                setTimeout(() => {
+                    burstHeart.remove();
+                }, 1000);
+            }
+        }
+
+        // Initialize hearts animation
+        function createHearts() {
+            const heartsContainer = document.querySelector('.hearts');
+            for (let i = 0; i < 20; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.textContent = '❤️';
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDelay = Math.random() * 6 + 's';
+                heartsContainer.appendChild(heart);
+            }
+        }
+
+        createHearts();
+    </script>
+</body>
+</html>
