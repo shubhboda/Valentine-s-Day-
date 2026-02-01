@@ -510,6 +510,252 @@
         @keyframes fadeIn {
             to { opacity: 1; }
         }
+        /* --- Envelope Animation Styles --- */
+        :root {
+            --envelope-color: #ff4d6d;
+            --envelope-flap-color: #ff3355;
+            --envelope-shadow: rgba(0, 0, 0, 0.2);
+            --letter-bg: #fff0f5;
+            --letter-text: #590d22;
+            --letter-accent: #a4133c;
+        }
+
+        .envelope-container {
+            position: relative;
+            display: none; /* Hidden Initially */
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 1s ease;
+            z-index: 100;
+            margin-top: 20px;
+        }
+
+        .envelope-container.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .envelope-wrapper {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            margin-top: 50px;
+            cursor: pointer;
+        }
+
+        .envelope {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: var(--envelope-color);
+            box-shadow: 0 10px 20px var(--envelope-shadow);
+        }
+
+        .flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-top: 110px solid var(--envelope-flap-color);
+            transform-origin: top;
+            transition: transform 0.6s ease 0.4s, z-index 0.2s;
+            z-index: 5;
+        }
+
+        .pocket {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 150px solid var(--envelope-color);
+            border-right: 150px solid var(--envelope-color);
+            border-bottom: 100px solid #ff758f;
+            border: none;
+            width: 100%;
+            height: 100%;
+            z-index: 4;
+            overflow: hidden;
+        }
+        
+        .pocket::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 150px solid #ff4d6d;
+            border-top: 100px solid transparent;
+            border-bottom: 100px solid transparent;
+            z-index: 4;
+        }
+        
+        .pocket::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 0;
+            height: 0;
+            border-right: 150px solid #ff4d6d;
+            border-top: 100px solid transparent;
+            border-bottom: 100px solid transparent;
+            z-index: 4;
+        }
+
+        .pocket-bottom {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-bottom: 110px solid #ff5c7c;
+            z-index: 5;
+        }
+
+        .letter {
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            width: 270px;
+            height: 180px;
+            background: var(--letter-bg);
+            border-radius: 5px;
+            padding: 20px;
+            box-sizing: border-box;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.6s ease, z-index 0.1s;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            overflow: hidden;
+            color: var(--letter-text);
+        }
+
+        .letter::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 2px dashed #ffb3c1;
+            box-sizing: border-box;
+            pointer-events: none;
+        }
+
+        .envelope-container.open .letter {
+            transform: translateY(-200px);
+            z-index: 6;
+            height: auto;
+            min-height: 350px;
+            width: 320px;
+            left: -10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            transition: transform 0.8s ease 0.6s, width 0.5s ease 0.6s, height 0.5s ease 0.6s, left 0.5s ease 0.6s;
+        }
+        
+        .envelope-container.open .flap {
+            transform: rotateX(180deg);
+            z-index: 1;
+            transition: transform 0.6s ease, z-index 0.2s 0.3s;
+        }
+
+        .letter-content {
+            opacity: 0;
+            transition: opacity 0.5s ease 1s;
+            width: 100%;
+        }
+
+        .envelope-container.open .letter-content {
+            opacity: 1;
+        }
+
+        .greeting {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.8rem;
+            color: var(--letter-accent);
+            margin-bottom: 10px;
+        }
+
+        .shayari {
+            font-style: italic;
+            color: #555;
+            font-size: 0.95rem;
+            margin: 15px 0;
+            line-height: 1.5;
+            border-top: 1px solid #ffccd5;
+            border-bottom: 1px solid #ffccd5;
+            padding: 10px 0;
+        }
+
+        .letter-message {
+            font-size: 0.9rem;
+            color: var(--letter-text);
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .controls {
+            margin-top: 150px;
+            display: flex;
+            gap: 20px;
+            z-index: 10;
+        }
+
+        .btn-open, .btn-close {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .btn-open {
+            background: #fff;
+            color: var(--letter-accent);
+            border: 2px solid var(--letter-accent);
+        }
+
+        .btn-open:hover {
+            background: var(--letter-accent);
+            color: #fff;
+        }
+
+        .btn-close {
+            background: #888;
+            color: #fff;
+            display: none;
+        }
+
+        .btn-close:hover {
+            background: #666;
+        }
+
+        .envelope-container.open .btn-open {
+            display: none;
+        }
+
+        .envelope-container.open .btn-close {
+            display: block;
+        }
+
+        .envelope-container.open .controls {
+             margin-top: 250px;
+             transition: margin-top 0.8s ease;
+        }
     </style>
 </head>
 <body>
@@ -569,6 +815,38 @@
             <button id="no-btn">No 😜</button>
         </div>
         <div id="message"></div>
+    </div>
+
+    <!-- Envelope Section (Hidden by default) -->
+    <div class="envelope-container" id="envelope-section">
+        <div class="envelope-wrapper" onclick="toggleEnvelope()">
+            <div class="envelope">
+                <div class="letter">
+                    <div class="letter-content">
+                        <div class="greeting" id="letter-greeting">Dear User 💖</div>
+                        <div class="shayari">
+                            “Kuch rishte lafzon ke mohtaaj nahi hote,<br>
+                            bas dil se dil ka hona kaafi hota hai.” 💫
+                        </div>
+                        <div class="letter-message">
+                            Wishing you a day filled with love, happiness, and beautiful moments. 
+                            May your heart always be full of joy and surrounded by those who cherish you. 
+                            <br><br>
+                            Happy Valentine's Day! 🌹
+                        </div>
+                        <div class="heart-icon">❤️</div>
+                    </div>
+                </div>
+                <div class="pocket"></div>
+                <div class="pocket-bottom"></div>
+                <div class="flap"></div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn-open" onclick="toggleEnvelope()">OPEN 💌</button>
+            <button class="btn-close" onclick="toggleEnvelope()">CLOSE ✖</button>
+        </div>
     </div>
 
     <script>
@@ -692,6 +970,8 @@
             const nameScreen = document.getElementById('name-screen');
             const valentineScreen = document.getElementById('valentine-screen');
             const userNameDisplay = document.getElementById('user-name');
+        const envelopeSection = document.getElementById('envelope-section');
+        const letterGreeting = document.getElementById('letter-greeting');
             const messageDiv = document.getElementById('message');
             
             nameScreen.classList.remove('active');
@@ -742,6 +1022,11 @@
         const yesBtn = document.getElementById('yes-btn');
         const noBtn = document.getElementById('no-btn');
         const message = document.getElementById('message');
+        // const userNameDisplay = document.getElementById('user-name'); // Already defined above or needs to be re-selected if I removed it? 
+        // Wait, let's just add after message.
+        
+        const envelopeSection = document.getElementById('envelope-section');
+        const letterGreetingElement = document.getElementById('letter-greeting'); // Renamed to avoid conflict with local var in finishWelcomeFlow if any
         const userNameDisplay = document.getElementById('user-name');
 
         // Function to send data to Google Sheets
@@ -781,11 +1066,32 @@
 
         // Yes button click
         yesBtn.addEventListener('click', () => {
-            message.textContent = "Yay! 💖 I knew it! Happy Valentine's Day!";
-            message.classList.add('show');
+            // Hide Valentine Screen
+            valentineScreen.classList.remove('active');
+            valentineScreen.style.display = 'none';
+            
+            // Show Envelope
+            envelopeSection.classList.add('active');
+            
+            // Set Name
+            if (userName) {
+                letterGreetingElement.innerHTML = `Dear ${userName} 💖`;
+            } else {
+                letterGreetingElement.innerHTML = `Dear Love 💖`;
+            }
+            
             sendToGoogleSheets(userName, 'Yes');
             createBurstHearts();
+            
+            // Trigger Open Animation automatically
+            setTimeout(() => {
+                envelopeSection.classList.add('open');
+            }, 500);
         });
+        
+        function toggleEnvelope() {
+            envelopeSection.classList.toggle('open');
+        }
 
         // No button move on mouseenter
         function moveNoBtn() {

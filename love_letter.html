@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Letter For You 💌</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Poppins:wght@300;400;600&display=swap');
+
+        :root {
+            --bg-color: #ffe6eb;
+            --envelope-color: #ff4d6d;
+            --envelope-flap-color: #ff3355;
+            --envelope-shadow: rgba(0, 0, 0, 0.2);
+            --letter-bg: #fff0f5;
+            --text-color: #590d22;
+            --accent-color: #a4133c;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+        }
+
+        /* --- Name Input Modal --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.5s ease;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 90%;
+            width: 350px;
+            border: 2px solid #fff;
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-title {
+            color: var(--accent-color);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .name-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ffccd5;
+            border-radius: 10px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+
+        .name-input:focus {
+            border-color: var(--envelope-color);
+        }
+
+        .submit-btn {
+            margin-top: 1.5rem;
+            background: var(--envelope-color);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4);
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.05);
+            background: var(--accent-color);
+        }
+
+        /* --- Question Screen --- */
+        .question-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none; /* Hidden Initially */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 900;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+        }
+
+        .question-box {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-width: 90%;
+            width: 400px;
+        }
+
+        .question-text {
+            font-size: 2rem;
+            color: var(--accent-color);
+            margin-bottom: 2rem;
+            font-family: 'Dancing Script', cursive;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .yes-btn {
+            background: #28a745; /* Green for Yes */
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .yes-btn:hover {
+            transform: scale(1.1);
+            background: #218838;
+        }
+
+        .no-btn {
+            background: #dc3545; /* Red for No */
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative; /* For moving logic */
+        }
+
+        .no-btn:hover {
+            background: #c82333;
+        }
+
+        /* --- Envelope Container --- */
+        .container {
+            position: relative;
+            display: none; /* Hidden Initially */
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .envelope-wrapper {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            margin-top: 50px;
+            cursor: pointer;
+        }
+
+        .envelope {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: var(--envelope-color);
+            box-shadow: 0 10px 20px var(--envelope-shadow);
+        }
+
+        /* The Flap */
+        .flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-top: 110px solid var(--envelope-flap-color);
+            transform-origin: top;
+            transition: transform 0.6s ease 0.4s, z-index 0.2s;
+            z-index: 5;
+        }
+
+        /* The Pocket */
+        .pocket {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 150px solid var(--envelope-color);
+            border-right: 150px solid var(--envelope-color);
+            border-bottom: 100px solid #ff758f;
+            border: none;
+            width: 100%;
+            height: 100%;
+            z-index: 4;
+            overflow: hidden;
+        }
+        
+        .pocket::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 150px solid #ff4d6d;
+            border-top: 100px solid transparent;
+            border-bottom: 100px solid transparent;
+            z-index: 4;
+        }
+        
+        .pocket::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 0;
+            height: 0;
+            border-right: 150px solid #ff4d6d;
+            border-top: 100px solid transparent;
+            border-bottom: 100px solid transparent;
+            z-index: 4;
+        }
+
+        .pocket-bottom {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-bottom: 110px solid #ff5c7c;
+            z-index: 5;
+        }
+
+        /* The Letter */
+        .letter {
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            width: 270px;
+            height: 180px;
+            background: var(--letter-bg);
+            border-radius: 5px;
+            padding: 20px;
+            box-sizing: border-box;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.6s ease, z-index 0.1s;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .letter::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 2px dashed #ffb3c1;
+            box-sizing: border-box;
+            pointer-events: none;
+        }
+
+        .container.open .letter {
+            transform: translateY(-200px);
+            z-index: 6;
+            height: auto;
+            min-height: 350px;
+            width: 320px;
+            left: -10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            transition: transform 0.8s ease 0.6s, width 0.5s ease 0.6s, height 0.5s ease 0.6s, left 0.5s ease 0.6s;
+        }
+        
+        .container.open .flap {
+            transform: rotateX(180deg);
+            z-index: 1;
+            transition: transform 0.6s ease, z-index 0.2s 0.3s;
+        }
+
+        .letter-content {
+            opacity: 0;
+            transition: opacity 0.5s ease 1s;
+            width: 100%;
+        }
+
+        .container.open .letter-content {
+            opacity: 1;
+        }
+
+        .greeting {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.8rem;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+        }
+
+        .shayari {
+            font-style: italic;
+            color: #555;
+            font-size: 0.95rem;
+            margin: 15px 0;
+            line-height: 1.5;
+            border-top: 1px solid #ffccd5;
+            border-bottom: 1px solid #ffccd5;
+            padding: 10px 0;
+        }
+
+        .message {
+            font-size: 0.9rem;
+            color: var(--text-color);
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .heart-icon {
+            font-size: 1.5rem;
+            color: #ff0054;
+            animation: beat 1s infinite alternate;
+        }
+
+        @keyframes beat {
+            to { transform: scale(1.2); }
+        }
+
+        .controls {
+            margin-top: 150px;
+            display: flex;
+            gap: 20px;
+            z-index: 10;
+        }
+
+        .btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .btn-open {
+            background: #fff;
+            color: var(--accent-color);
+            border: 2px solid var(--accent-color);
+        }
+
+        .btn-open:hover {
+            background: var(--accent-color);
+            color: #fff;
+        }
+
+        .btn-close {
+            background: #888;
+            color: #fff;
+            display: none;
+        }
+
+        .btn-close:hover {
+            background: #666;
+        }
+
+        .container.open .btn-open {
+            display: none;
+        }
+
+        .container.open .btn-close {
+            display: block;
+        }
+
+        .container.open .controls {
+             margin-top: 250px;
+             transition: margin-top 0.8s ease;
+        }
+
+        .bg-hearts {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .bg-heart {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 2rem;
+            animation: float 6s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Playful No Message */
+        .no-message {
+            position: fixed;
+            top: 20%;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            font-size: 1.2rem;
+            color: #d63384;
+            display: none;
+            z-index: 1000;
+            animation: popIn 0.3s ease;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Floating Background Hearts -->
+    <div class="bg-hearts" id="bg-hearts"></div>
+
+    <!-- 1. Name Input Modal -->
+    <div class="modal-overlay" id="name-modal">
+        <div class="modal-content">
+            <h2 class="modal-title">Who is this for? 💖</h2>
+            <input type="text" id="user-name" class="name-input" placeholder="Enter your name..." autocomplete="off">
+            <button class="submit-btn" onclick="submitName()">Start</button>
+        </div>
+    </div>
+
+    <!-- 2. Valentine Question Screen -->
+    <div class="question-screen" id="question-screen">
+        <div class="question-box">
+            <div class="question-text">Will you be my Valentine? 🌹</div>
+            <div class="btn-group">
+                <button class="yes-btn" onclick="acceptValentine()">YES ❤️</button>
+                <button class="no-btn" id="no-btn" onmouseover="moveNoButton()" onclick="rejectValentine()">NO ❌</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Playful No Message -->
+    <div class="no-message" id="no-message">Are you sure? 🥺 Try again!</div>
+
+    <!-- 3. Envelope Container (Only shown if YES) -->
+    <div class="container" id="main-container">
+        <div class="envelope-wrapper">
+            <div class="envelope">
+                <div class="letter">
+                    <div class="letter-content">
+                        <div class="greeting" id="letter-greeting">Dear User 💖</div>
+                        <div class="shayari">
+                            “Kuch rishte lafzon ke mohtaaj nahi hote,<br>
+                            bas dil se dil ka hona kaafi hota hai.” 💫
+                        </div>
+                        <div class="message">
+                            Wishing you a day filled with love, happiness, and beautiful moments. 
+                            May your heart always be full of joy and surrounded by those who cherish you. 
+                            <br><br>
+                            Happy Valentine's Day! 🌹
+                        </div>
+                        <div class="heart-icon">❤️</div>
+                    </div>
+                </div>
+                <div class="pocket"></div>
+                <div class="pocket-bottom"></div>
+                <div class="flap"></div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-open" onclick="openEnvelope()">OPEN 💌</button>
+            <button class="btn btn-close" onclick="closeEnvelope()">CLOSE ✖</button>
+        </div>
+    </div>
+
+    <script>
+        // --- Logic ---
+        const modal = document.getElementById('name-modal');
+        const questionScreen = document.getElementById('question-screen');
+        const mainContainer = document.getElementById('main-container');
+        const userNameInput = document.getElementById('user-name');
+        const letterGreeting = document.getElementById('letter-greeting');
+        const container = document.querySelector('.container');
+        const bgHearts = document.getElementById('bg-hearts');
+        const noBtn = document.getElementById('no-btn');
+        const noMessage = document.getElementById('no-message');
+
+        let userName = "";
+
+        // 1. Submit Name
+        function submitName() {
+            const name = userNameInput.value.trim();
+            if (!name) {
+                alert("Please enter your name first! 🌸");
+                return;
+            }
+            
+            userName = name;
+            letterGreeting.innerHTML = `Dear ${name} 💖`;
+            
+            // Hide Name Modal & Show Question Screen
+            modal.style.opacity = '0';
+            setTimeout(() => {
+                modal.style.display = 'none';
+                questionScreen.style.display = 'flex'; // Show Question
+            }, 500);
+        }
+
+        // Allow Enter key
+        userNameInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') submitName();
+        });
+
+        // 2. Question Logic
+        function acceptValentine() {
+            // Hide Question Screen
+            questionScreen.style.opacity = '0';
+            noMessage.style.display = 'none'; // Hide any previous messages
+            
+            setTimeout(() => {
+                questionScreen.style.display = 'none';
+                // Show Envelope
+                mainContainer.style.display = 'flex';
+                // Small delay for fade in
+                setTimeout(() => {
+                    mainContainer.style.opacity = '1';
+                    createFloatingHearts();
+                }, 100);
+            }, 500);
+        }
+
+        function rejectValentine() {
+            // Playful reaction for clicking No
+            noMessage.style.display = 'block';
+            moveNoButton();
+            setTimeout(() => {
+                noMessage.style.display = 'none';
+            }, 2000);
+        }
+
+        function moveNoButton() {
+            // Make the No button jump around randomly
+            const x = Math.random() * (window.innerWidth - 100);
+            const y = Math.random() * (window.innerHeight - 50);
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = x + 'px';
+            noBtn.style.top = y + 'px';
+        }
+
+        // 3. Envelope Animation
+        function openEnvelope() {
+            container.classList.add('open');
+        }
+
+        function closeEnvelope() {
+            container.classList.remove('open');
+        }
+
+        // 4. Background Animation
+        function createFloatingHearts() {
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.classList.add('bg-heart');
+                heart.innerHTML = Math.random() > 0.5 ? '❤️' : '💖';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                heart.style.fontSize = (Math.random() * 20 + 20) + 'px';
+                
+                bgHearts.appendChild(heart);
+                
+                setTimeout(() => {
+                    heart.remove();
+                }, 6000);
+            }, 500);
+        }
+
+    </script>
+</body>
+</html>
