@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Happy Valentine's Day!</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
+
     <style>
         :root {
             --primary-gradient: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
@@ -15,12 +15,13 @@
             --card-hover: rgba(255, 255, 255, 0.25);
             --deep-bg: linear-gradient(135deg, #2b1055, #7597de); /* Modern deep gradient */
             --peach-gold: linear-gradient(to right, #ed4264, #ffedbc);
+            --body-bg: #fce4ec; /* Soft light pink background */
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--primary-gradient);
-            color: white;
+            background: var(--body-bg);
+            color: var(--text-color);
             margin: 0;
             padding: 0;
             overflow-x: hidden;
@@ -30,70 +31,30 @@
             align-items: center;
         }
 
-        /* Background Floating Elements */
-        .bg-shapes {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        .shape {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(50px);
-            opacity: 0.6;
-            animation: floatShape 20s infinite alternate;
-        }
-
-        .shape:nth-child(1) {
-            top: -10%;
-            left: -10%;
-            width: 500px;
-            height: 500px;
-            background: #ff6b6b;
-            animation-delay: 0s;
-        }
-
-        .shape:nth-child(2) {
-            bottom: -10%;
-            right: -10%;
-            width: 400px;
-            height: 400px;
-            background: #7597de;
-            animation-delay: -5s;
-        }
-
-        .shape:nth-child(3) {
-            top: 40%;
-            left: 40%;
-            width: 300px;
-            height: 300px;
-            background: #ffedbc;
-            animation-delay: -10s;
-        }
-
-        @keyframes floatShape {
-            0% { transform: translate(0, 0) rotate(0deg); }
-            100% { transform: translate(100px, 50px) rotate(20deg); }
-        }
-
         .container {
             text-align: center;
-            background: rgba(255, 255, 255, 0.1);
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #ff6b6b 100%);
             padding: 40px;
             border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 32px rgba(255, 107, 107, 0.3);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
-            border: 1px solid var(--glass-border);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             max-width: 600px;
             width: 90%;
             position: relative;
+            animation: pageLoad 1.2s ease-out;
+        }
+
+        @keyframes pageLoad {
+            0% {
+                opacity: 0;
+                transform: scale(0.8) translateY(50px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
 
         .name-input {
@@ -119,9 +80,19 @@
         .name {
             font-size: 4em;
             font-weight: bold;
-            color: #ffd700;
+            background: linear-gradient(45deg, #ff1493, #ff8c00, #ffd700, #ff69b4);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 4s ease-in-out infinite;
             text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
             margin-bottom: 20px;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
 
         .question {
@@ -149,16 +120,34 @@
         #yes-btn {
             background: linear-gradient(45deg, #ff6b6b, #ee5a24);
             color: white;
+            animation: pulse 2s infinite;
         }
 
         #yes-btn:hover {
             transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 107, 107, 0.8);
         }
 
         #no-btn {
             background: linear-gradient(45deg, #74b9ff, #0984e3);
             color: white;
             position: relative;
+            animation: bounce 3s infinite;
+        }
+
+        #no-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(116, 185, 255, 0.8);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
         }
 
         #message {
@@ -187,7 +176,7 @@
             position: absolute;
             color: #ff69b4;
             font-size: 2em;
-            animation: float 6s linear infinite;
+            
         }
 
         .heart:nth-child(odd) {
@@ -198,23 +187,12 @@
             animation-delay: -4s;
         }
 
-        .burst-heart {
+                .burst-heart {
             position: absolute;
             color: #ff69b4;
             font-size: 2em;
             animation: burst 1s ease-out forwards;
             pointer-events: none;
-        }
-
-        @keyframes float {
-            0% {
-                transform: translateY(100vh) rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-100px) rotate(360deg);
-                opacity: 0;
-            }
         }
 
         @keyframes burst {
@@ -291,7 +269,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: var(--deep-bg);
+            background: linear-gradient(135deg, #0a0a23, #1a1a2e, #16213e);
             z-index: 9999;
             display: flex;
             flex-direction: column;
@@ -533,7 +511,7 @@
             opacity: 0;
             transition: opacity 1s ease;
             z-index: 100;
-            margin-top: 20px;
+            margin-top: 80px;
         }
 
         .envelope-container.active {
@@ -780,11 +758,52 @@
             object-fit: cover;
             border: 4px solid rgba(255, 255, 255, 0.8);
             box-shadow: 0 0 20px var(--accent-color);
-            opacity: 0;
-            transform: scale(0.8);
+            opacity: 1;
+            transform: scale(1);
             transition: all 0.8s ease;
-            display: none;
+            display: block;
             z-index: 2;
+            position: relative;
+        }
+
+        .profile-photo::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border: 2px dotted #ffd700;
+            border-radius: 50%;
+            animation: pulseBorder 3s infinite ease-in-out;
+            opacity: 0.8;
+        }
+
+        .profile-photo::after {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: -15px;
+            right: -15px;
+            bottom: -15px;
+            border: 4px solid #ffd700;
+            border-radius: 50%;
+            z-index: -1;
+            opacity: 0.6;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+        }
+
+        @keyframes pulseBorder {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.8;
+                box-shadow: 0 0 10px #ffd700;
+            }
+            50% {
+                transform: scale(1.05);
+                opacity: 1;
+                box-shadow: 0 0 20px #ffd700;
+            }
         }
 
         .profile-photo.loaded {
@@ -825,14 +844,41 @@
         .mini-heart {
             position: absolute;
             font-size: 1.5rem;
-            animation: floatMini 4s ease-in-out infinite;
             opacity: 0.8;
             z-index: 1;
+            animation: floatHeart 6s infinite ease-in-out;
         }
-        
-        @keyframes floatMini {
-            0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(10px, -15px); }
+
+        .mini-heart:nth-child(odd) {
+            animation-delay: -3s;
+        }
+
+        @keyframes floatHeart {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-20px) rotate(5deg); }
+            50% { transform: translateY(0) rotate(0deg); }
+            75% { transform: translateY(-10px) rotate(-5deg); }
+        }
+
+        /* Particle effects */
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: radial-gradient(circle, #ff69b4, #ff1493);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: particleFloat 8s infinite ease-in-out;
+        }
+
+        .particle:nth-child(2n) {
+            animation-delay: -4s;
+            background: radial-gradient(circle, #ffd700, #ff8c00);
+        }
+
+        @keyframes particleFloat {
+            0%, 100% { transform: translateY(0) scale(1); opacity: 0.6; }
+            50% { transform: translateY(-30px) scale(1.2); opacity: 0.9; }
         }
     </style>
 </head>
@@ -864,15 +910,6 @@
                 <!-- Options generated by JS -->
             </div>
         </div>
-    </div>
-
-    <div class="hearts">
-        <div class="heart">❤️</div>
-        <div class="heart">💖</div>
-        <div class="heart">💕</div>
-        <div class="heart">💗</div>
-        <div class="heart">💓</div>
-        <div class="heart">💘</div>
     </div>
 
     <!-- Name Input Screen -->
@@ -1230,137 +1267,17 @@
 
         createHearts();
 
-        // --- Profile Photo & Color Extraction Logic ---
+        // Initialize profile photo
         const profilePhoto = document.getElementById('profile-photo');
-        const profileContainer = document.querySelector('.profile-container');
-        // welcomeOverlay is already defined above
-
-        // Function to analyze mood and apply theme
-        function applyThemeFromImage() {
-            const colorThief = new ColorThief();
-            
-            // Handle image load error or success
-            if (profilePhoto.complete) {
-                if (profilePhoto.naturalWidth > 0) {
-                    processColors();
-                } else {
-                    // Image failed to load or is 0 size
-                    handleImageError();
-                }
-            } else {
-                profilePhoto.addEventListener('load', processColors);
-                profilePhoto.addEventListener('error', handleImageError);
-            }
-
-            function handleImageError() {
-                console.log("Image failed to load, using default theme.");
-                profilePhoto.classList.add('loaded'); // Show placeholder
-                // Set default theme colors if needed
-                document.documentElement.style.setProperty('--accent-color', '#ff1493');
-            }
-
-            function processColors() {
-                // Security check: ensure image is loaded and valid
-                if (profilePhoto.naturalWidth === 0) {
-                     handleImageError();
-                     return;
-                }
-
-                try {
-                    // 1. Extract Colors
-                    const dominantColor = colorThief.getColor(profilePhoto);
-                    const palette = colorThief.getPalette(profilePhoto, 5);
-
-                    // Convert to RGB strings
-                    const domRGB = `rgb(${dominantColor[0]}, ${dominantColor[1]}, ${dominantColor[2]})`;
-                    const secRGB = palette[0] ? `rgb(${palette[0][0]}, ${palette[0][1]}, ${palette[0][2]})` : domRGB;
-                    const accRGB = palette[1] ? `rgb(${palette[1][0]}, ${palette[1][1]}, ${palette[1][2]})` : secRGB;
-                    
-                    // 2. Analyze Mood (Brightness)
-                    // Brightness formula: (R*299 + G*587 + B*114) / 1000
-                    const brightness = (dominantColor[0] * 299 + dominantColor[1] * 587 + dominantColor[2] * 114) / 1000;
-                    const isDark = brightness < 128;
-
-                    console.log("Dominant:", domRGB, "Brightness:", brightness, "Mood:", isDark ? "Dark/Romantic" : "Light/Pastel");
-
-                    // 3. Apply Theme Variables
-                    const root = document.documentElement;
-                    root.style.setProperty('--accent-color', accRGB);
-                    
-                    // Background Gradient Logic
-                    let bgGradient;
-                    if (isDark) {
-                        // Dark Mood: Deep, rich gradient
-                        // Use dominant color as base, fade to secondary
-                        bgGradient = `linear-gradient(135deg, ${domRGB} 0%, rgba(0,0,0,0.8) 100%)`;
-                        root.style.setProperty('--text-color', '#fff');
-                        welcomeOverlay.style.color = '#fff';
-                        document.querySelector('.sub-text').style.color = '#e0e0e0';
-                    } else {
-                        // Light Mood: Soft, pastel gradient
-                        // Use dominant color lightened or mixed with white
-                        bgGradient = `linear-gradient(135deg, ${domRGB} 0%, #fff 100%)`;
-                         // Check if text needs to be dark
-                         if (brightness > 200) {
-                             root.style.setProperty('--text-color', '#333');
-                             welcomeOverlay.style.color = '#333';
-                             document.querySelector('.sub-text').style.color = '#555';
-                         }
-                    }
-
-                    // Apply main background
-                    root.style.setProperty('--deep-bg', bgGradient);
-                    welcomeOverlay.style.background = bgGradient;
-
-                    // Apply Glow & Ring
-                    profilePhoto.style.boxShadow = `0 0 30px ${accRGB}`;
-                    profilePhoto.style.borderColor = `rgba(255,255,255, ${isDark ? 0.2 : 0.8})`;
-
-                    // 4. Show Photo with Animation
-                    profilePhoto.classList.add('loaded');
-
-                    // 5. Add Floating Hearts with extracted colors
-                    addFloatingHearts(accRGB, secRGB);
-
-                } catch (err) {
-                    console.error("Error extracting colors:", err);
-                    // Fallback to default if error (e.g., CORS or image load fail)
-                    profilePhoto.classList.add('loaded');
-                }
-            }
-        }
-
-        function addFloatingHearts(color1, color2) {
-            // Remove existing mini hearts if any
-            const existing = document.querySelectorAll('.mini-heart');
-            existing.forEach(h => h.remove());
-            
-            for(let i=0; i<8; i++) {
-                const heart = document.createElement('div');
-                heart.className = 'mini-heart';
-                heart.innerHTML = '❤️'; 
-                // Alternate colors
-                heart.style.color = i % 2 === 0 ? color1 : color2;
-                heart.style.fontSize = (Math.random() * 1.5 + 1) + 'rem';
-                
-                // Random position around the circle
-                const angle = Math.random() * Math.PI * 2;
-                const radius = 160; 
-                const x = Math.cos(angle) * radius;
-                const y = Math.sin(angle) * radius;
-                
-                heart.style.left = (130 + x - 15) + 'px'; 
-                heart.style.top = (130 + y - 15) + 'px';
-                
-                heart.style.animationDelay = `${Math.random() * 3}s`;
-                heart.style.opacity = '0.6';
-                
-                profileContainer.appendChild(heart);
-            }
-        }
-
-        // Initialize
-        applyThemeFromImage();
+        profilePhoto.classList.add('loaded');
     </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
